@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Prediction History</h1>
+    {% if tables %}
+        {% for table in tables %}
+            {{ table | safe }}
+        {% endfor %}
+    {% else %}
+        <p>No prediction history available.</p>
+    {% endif %}
+    <a href="{{ url_for('index') }}">Make a new prediction</a>
+</body>
+</html>
