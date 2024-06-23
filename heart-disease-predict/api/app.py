@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 import pandas as pd
 import joblib
 import os
@@ -7,11 +7,12 @@ from sklearn.preprocessing import LabelEncoder
 app = Flask(__name__)
 
 # Load the machine learning model
-model = joblib.load('rf_heart.model')
+model_path = os.path.join(os.path.dirname(__file__), 'rf_heart.model')
+model = joblib.load(model_path)
 
 # Function to save predictions to a CSV file
 def save_prediction(data, prediction):
-    csv_filename = 'prediction_history.csv'
+    csv_filename = os.path.join(os.path.dirname(__file__), 'prediction_history.csv')
     if not os.path.isfile(csv_filename):
         df = pd.DataFrame(columns=['Age', 'Sex', 'ChestPainType', 'RestingBP', 'Cholesterol', 'FastingBS', 'RestingECG', 'MaxHR', 'ExerciseAngina', 'Oldpeak', 'ST_Slope', 'Prediction'])
         df.to_csv(csv_filename, index=False)
@@ -68,8 +69,9 @@ def predict():
 
 @app.route('/history')
 def history():
-    if os.path.isfile('prediction_history.csv'):
-        history = pd.read_csv('prediction_history.csv')
+    csv_filename = os.path.join(os.path.dirname(__file__), 'prediction_history.csv')
+    if os.path.isfile(csv_filename):
+        history = pd.read_csv(csv_filename)
         return render_template('history.html', tables=[history.to_html(classes='data', header="true")])
     else:
         return render_template('history.html', tables=[])
